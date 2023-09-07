@@ -6,7 +6,7 @@
 /*   By: eaubry <eaubry@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:21 by eaubry            #+#    #+#             */
-/*   Updated: 2023/09/04 16:40:03 by eaubry           ###   ########.fr       */
+/*   Updated: 2023/09/05 15:07:05 by eaubry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ typedef struct s_data
 	pthread_mutex_t	*fork_mutex;
 	pthread_mutex_t end_mutex;
 	int	end_sim;
-	int hm_eaten;
 	struct s_philo *philo;
 	struct s_moni *monitoring;
 	int	number_of_philosophers;
@@ -40,13 +39,14 @@ typedef struct s_data
 typedef struct s_moni
 {
 	pthread_t tid;
-	
+	t_data *data;
 } t_moni;
 
 typedef struct s_philo
 {
 	int	id;
 	pthread_t tid;
+	long int lst_meal;
 	t_data	*data;
 	int	left_fork;
 	int	right_fork;
@@ -68,5 +68,7 @@ void	print_philo(int	who, t_philo *philo);
 void	philo_is_eating(t_philo *philo);
 
 void	philo_is_sleeping(t_philo *philo);
+
+void	*monitoring_routine(void *data_ptr);
 
 #endif

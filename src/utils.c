@@ -6,7 +6,7 @@
 /*   By: eaubry <eaubry@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 16:39:15 by eaubry            #+#    #+#             */
-/*   Updated: 2023/09/04 16:39:34 by eaubry           ###   ########.fr       */
+/*   Updated: 2023/09/05 14:03:46 by eaubry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,12 @@ void	print_philo(int	who, t_philo *philo)
 void	philo_is_eating(t_philo *philo)
 {
 	print_philo(1, philo);
-	ft_usleep(200);
+	philo->lst_meal = time_now();
+	ft_usleep(philo->data->tte);
 }
 
 void	philo_is_sleeping(t_philo *philo)
 {
 	print_philo(2, philo);
-	ft_usleep(200);
+	ft_usleep(philo->data->tts);
 }
