@@ -6,11 +6,11 @@
 #    By: eaubry <eaubry@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/28 13:25:39 by eaubry            #+#    #+#              #
-#    Updated: 2023/09/04 16:46:57 by eaubry           ###   ########.fr        #
+#    Updated: 2023/09/15 12:55:34 by eaubry           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS    =	src/main.c src/routine.c src/check.c src/ft_atoi.c src/utils.c
+SRCS    =	src/main.c src/routine.c src/check.c src/ft_atoi.c src/utils.c src/init.c
 
 NAME    =	philo
 

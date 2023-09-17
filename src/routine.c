@@ -16,13 +16,13 @@
 void to_do(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->fork_mutex[philo->left_fork]);
-			print_philo(0, philo);
-			pthread_mutex_lock(&philo->data->fork_mutex[philo->right_fork]);
-			print_philo(0, philo);
-			philo_is_eating(philo);
-			pthread_mutex_unlock(&philo->data->fork_mutex[philo->left_fork]);
-			pthread_mutex_unlock(&philo->data->fork_mutex[philo->right_fork]);
-			philo_is_sleeping(philo);
+	print_philo(0, philo);
+	pthread_mutex_lock(&philo->data->fork_mutex[philo->right_fork]);
+	print_philo(0, philo);
+	philo_is_eating(philo);
+	pthread_mutex_unlock(&philo->data->fork_mutex[philo->left_fork]);	
+	pthread_mutex_unlock(&philo->data->fork_mutex[philo->right_fork]);
+	philo_is_sleeping(philo);
 }
 
 void	*thread_routine(void *data_ptr)

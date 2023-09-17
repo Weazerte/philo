@@ -6,7 +6,7 @@
 /*   By: eaubry <eaubry@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:36:24 by eaubry            #+#    #+#             */
-/*   Updated: 2023/09/07 14:07:54 by eaubry           ###   ########.fr       */
+/*   Updated: 2023/09/15 12:57:44 by eaubry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,14 @@ int	ft_pars(t_data *data, char **av, int *ac)
 	// }
 	// if (i != 0)
 	// 	return (i);
-	data->number_of_philosophers = ft_atoi(av[1]);
-	data->tte = ft_atoi(av[2]);
-	data->tts = ft_atoi(av[3]);
-	data->ttd = ft_atoi(av[4]);
+	// data->number_of_philosophers = ft_atoi(av[1]);
+	// data->tte = ft_atoi(av[2]);
+	// data->tts = ft_atoi(av[3]);
+	// data->ttd = ft_atoi(av[4]);
+	data->number_of_philosophers = 4;
+	data->tte = 410;
+	data->tts = 200;
+	data->ttd = 200;
 	return (i);
 }
 
@@ -56,56 +60,56 @@ int	ft_usleep(long int time)
 	return (1);
 }
 
-int	ft_init(t_data *data)
-{
-	int	i;
+// int	ft_init(t_data *data)
+// {
+// 	int	i;
 
-	data->philo = malloc(sizeof(t_philo) * data->number_of_philosophers);
-	if (!data->philo)
-		return (-1);
-	data->monitoring = malloc(sizeof(t_moni));
-	if (!data->monitoring)
-	{
-		free(data->philo);
-		return (-1);
-	}
-	data->fork_mutex = malloc(sizeof(pthread_mutex_t) * data->number_of_philosophers);
-	if (!data->fork_mutex)
-	{
-		free(data->philo);
-		free(data->monitoring);
-		return (-1);
-	}
-	i = -1;
-	while (++i < data->number_of_philosophers)
-	{
-		if(pthread_mutex_init(&data->fork_mutex[i], NULL) == -1)
-		{
-			free(data->philo);
-			free(data->fork_mutex);
-			free(data->monitoring);
-			return (1);
-		}
-	}
-	if (pthread_mutex_init(&data->end_mutex, NULL) == -1)
-	{
-		free(data->philo);
-		free(data->fork_mutex);
-		free(data->monitoring);
-		return (1);
-	}
-	i = -1;
-	while (++i < data->number_of_philosophers)
-	{
-		data->philo[i].id = i;
-		data->philo[i].left_fork = i;
-		data->philo[i].right_fork = (i + 1) % data->number_of_philosophers;
-		data->philo[i].data = data;
-	}
-	data->monitoring->data = data;
-	data->monitoring->data->philo = data->philo;
-	return (0);
-}
+// 	data->philo = malloc(sizeof(t_philo) * data->number_of_philosophers);
+// 	if (!data->philo)
+// 		return (-1);
+// 	data->monitoring = malloc(sizeof(t_moni));
+// 	if (!data->monitoring)
+// 	{
+// 		free(data->philo);
+// 		return (-1);
+// 	}
+// 	data->fork_mutex = malloc(sizeof(pthread_mutex_t) * data->number_of_philosophers);
+// 	if (!data->fork_mutex)
+// 	{
+// 		free(data->philo);
+// 		free(data->monitoring);
+// 		return (-1);
+// 	}
+// 	if (pthread_mutex_init(&data->end_mutex, NULL) == -1)
+// 	{
+// 		free(data->philo);
+// 		free(data->monitoring);
+// 		return (-1);
+// 	}
+// 	i = -1;
+// 	while (++i < data->number_of_philosophers)
+// 	{
+// 		if(pthread_mutex_init(&data->fork_mutex[i], NULL) == -1)
+// 		{
+// 			free(data->philo);
+// 			pthread_mutex_destroy(&data->end_mutex);
+// 			pthread_mutex_destroy(data->fork_mutex);
+// 			return (-1);
+// 		}
+// 	}
+// 	data->end_sim = 0;
+// 	i = -1;
+// 	while (++i < data->number_of_philosophers)
+// 	{
+// 		data->philo[i].id = i;
+// 		data->philo[i].left_fork = i;
+// 		data->philo[i].right_fork = (i + 1) % data->number_of_philosophers;
+// 		data->philo[i].data = data;
+// 	}
+	
+// 	data->monitoring->data = data; 
+// 	return (0);
+// }
 
 
 void	ft_free(t_data *data)
@@ -113,7 +117,6 @@ void	ft_free(t_data *data)
 	int	i;
 
 	free(data->philo);
-	free(data->fork_mutex);
 	free(data->monitoring);
 	i = 0;
 	while (i < data->number_of_philosophers)
@@ -130,10 +133,11 @@ int	main(int ac, char **av)
 	// if (ac != 5 && ac != 6)
 	// {
 		t_data data;
-		data.end_sim = 0;
+		
 		if (ft_pars(&data, av, &ac) != 0)
 			return (0);
-		ft_init(&data);
+		init_data(ac, av, &data);
+		printf("%p\n", &data);
 		ft_routine(&data);
 		i = 0;
 		while (i < data.number_of_philosophers)
@@ -141,6 +145,7 @@ int	main(int ac, char **av)
 			pthread_join(data.philo[i].tid, NULL);
 			i++;
 		}
+		pthread_join(data.monitoring->tid, NULL);
 		i = 0;
 		ft_free(&data);
 	// }

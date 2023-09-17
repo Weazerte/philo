@@ -6,7 +6,7 @@
 /*   By: eaubry <eaubry@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:21 by eaubry            #+#    #+#             */
-/*   Updated: 2023/09/05 15:07:05 by eaubry           ###   ########.fr       */
+/*   Updated: 2023/09/15 12:58:26 by eaubry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,5 +70,7 @@ void	philo_is_eating(t_philo *philo);
 void	philo_is_sleeping(t_philo *philo);
 
 void	*monitoring_routine(void *data_ptr);
+
+int	init_data(int ac, char **av, t_data *data);
 
 #endif
