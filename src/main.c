@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weaz <weaz@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: eaubry <eaubry@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:36:24 by eaubry            #+#    #+#             */
-/*   Updated: 2023/09/24 05:37:53 by weaz             ###   ########.fr       */
+/*   Updated: 2023/09/25 18:07:26 by eaubry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	ft_pars(char **av, int ac)
 {
-	int	i;
-	int	count;
+	int		i;
+	int		count;
 	size_t	j;
 
 	i = 1;
@@ -60,14 +60,14 @@ void	ft_free(t_data *data)
 
 int	main(int ac, char **av)
 {
-	int	i;
-	t_data data;
+	int		i;
+	t_data	data;
 
 	if (ac >= 5 && ac <= 6)
 	{
 		if (ft_pars(av, ac) != 0)
 			return (0);
-		if(init_data(ac, av, &data) == 1)
+		if (init_data(ac, av, &data) == 1)
 			return (0);
 		ft_routine(&data);
 		pthread_join(data.monitoring->tid, NULL);

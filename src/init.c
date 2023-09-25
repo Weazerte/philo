@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weaz <weaz@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: eaubry <eaubry@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 12:54:43 by eaubry            #+#    #+#             */
-/*   Updated: 2023/09/24 05:41:24 by weaz             ###   ########.fr       */
+/*   Updated: 2023/09/25 18:06:20 by eaubry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
-
 
 int	init_mutex(t_data *data)
 {
@@ -24,8 +23,13 @@ int	init_mutex(t_data *data)
 			return (1);
 		i++;
 	}
-	if (pthread_mutex_init(&data->m_lst_meal, NULL))
-		return (1);
+	i = 0;
+	while (i < data->number_of_philosophers)
+	{
+		if (pthread_mutex_init(&data->m_lst_meal[i], NULL))
+			return (1);
+		i++;
+	}
 	if (pthread_mutex_init(&data->print, NULL))
 		return (1);
 	if (pthread_mutex_init(&data->iter_mutex, NULL))
@@ -61,7 +65,15 @@ int	init_malloc(t_data *data)
 	data->philo = malloc(sizeof(t_philo) * data->number_of_philosophers);
 	if (!data->philo)
 		return (1);
-	data->fork_mutex = malloc(sizeof(pthread_mutex_t) * data->number_of_philosophers);
+	data->m_lst_meal = malloc(sizeof(pthread_mutex_t)
+			* data->number_of_philosophers);
+	if (!data->m_lst_meal)
+	{
+		ft_free_init(data, "error lst_meal_mutex");
+		return (1);
+	}
+	data->fork_mutex = malloc(sizeof(pthread_mutex_t)
+			* data->number_of_philosophers);
 	if (!data->fork_mutex)
 	{
 		ft_free_init(data, "error fork_mutex");
@@ -99,6 +111,7 @@ int	init_data(int ac, char **av, t_data *data)
 	(void)ac;
 	(void)**av;
 	data->max_iter = -1;
+	data->can_i = 0;
 	if (ac >= 5)
 	{
 		data->number_of_philosophers = ft_atoi(av[1]);
