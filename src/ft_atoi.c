@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eaubry <eaubry@student.42.fr>              +#+  +:+       +#+        */
+/*   By: weaz <weaz@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/10/17 12:52:24 by rmechety          #+#    #+#             */
-/*   Updated: 2023/09/01 15:53:05 by eaubry           ###   ########.fr       */
+/*   Created: 2023/09/18 23:50:01 by weaz              #+#    #+#             */
+/*   Updated: 2023/09/22 15:25:54 by weaz             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,3 +36,12 @@ int	ft_atoi(const char *nptr)
 	}
 	return (sign * result);
 }
+
+int	ft_isdigit(char c)
+{
+	if (c >= '0' && c <= '9')
+		return (0);
+	else
+		return (1);
+}
+

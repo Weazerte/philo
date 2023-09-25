@@ -3,14 +3,14 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: eaubry <eaubry@student.42.fr>              +#+  +:+       +#+         #
+#    By: weaz <weaz@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/28 13:25:39 by eaubry            #+#    #+#              #
-#    Updated: 2023/09/15 12:55:34 by eaubry           ###   ########.fr        #
+#    Updated: 2023/09/24 05:05:02 by weaz             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS    =	src/main.c src/routine.c src/check.c src/ft_atoi.c src/utils.c src/init.c
+SRCS    =	src/main.c src/routine.c src/check.c src/ft_atoi.c src/utils.c src/init.c src/monitoring.c
 
 NAME    =	philo
 

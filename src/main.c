@@ -3,43 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eaubry <eaubry@student.42.fr>              +#+  +:+       +#+        */
+/*   By: weaz <weaz@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:36:24 by eaubry            #+#    #+#             */
-/*   Updated: 2023/09/15 12:57:44 by eaubry           ###   ########.fr       */
+/*   Updated: 2023/09/24 05:37:53 by weaz             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-int	ft_pars(t_data *data, char **av, int *ac)
+int	ft_pars(char **av, int ac)
 {
 	int	i;
-	(void)*ac;
-	(void)**av;
-	// size_t	j;
+	int	count;
+	size_t	j;
 
-	i = 0; 
-	// while(*ac++)
-	// {
-	// 	j = 0;
-	// 	while (j < ft_strlen(av[*ac]))
-	// 	{
-	// 		i += ft_isdigit(av[*ac][j]);
-	// 		j++;
-	// 	}
-	// }
-	// if (i != 0)
-	// 	return (i);
-	// data->number_of_philosophers = ft_atoi(av[1]);
-	// data->tte = ft_atoi(av[2]);
-	// data->tts = ft_atoi(av[3]);
-	// data->ttd = ft_atoi(av[4]);
-	data->number_of_philosophers = 4;
-	data->tte = 410;
-	data->tts = 200;
-	data->ttd = 200;
-	return (i);
+	i = 1;
+	count = 0;
+	while (i < ac)
+	{
+		j = 0;
+		while (av[i][j])
+		{
+			count += ft_isdigit(av[i][j]);
+			j++;
+		}
+		i++;
+	}
+	return (count);
 }
 
 long int	time_now(void)
@@ -60,94 +51,30 @@ int	ft_usleep(long int time)
 	return (1);
 }
 
-// int	ft_init(t_data *data)
-// {
-// 	int	i;
-
-// 	data->philo = malloc(sizeof(t_philo) * data->number_of_philosophers);
-// 	if (!data->philo)
-// 		return (-1);
-// 	data->monitoring = malloc(sizeof(t_moni));
-// 	if (!data->monitoring)
-// 	{
-// 		free(data->philo);
-// 		return (-1);
-// 	}
-// 	data->fork_mutex = malloc(sizeof(pthread_mutex_t) * data->number_of_philosophers);
-// 	if (!data->fork_mutex)
-// 	{
-// 		free(data->philo);
-// 		free(data->monitoring);
-// 		return (-1);
-// 	}
-// 	if (pthread_mutex_init(&data->end_mutex, NULL) == -1)
-// 	{
-// 		free(data->philo);
-// 		free(data->monitoring);
-// 		return (-1);
-// 	}
-// 	i = -1;
-// 	while (++i < data->number_of_philosophers)
-// 	{
-// 		if(pthread_mutex_init(&data->fork_mutex[i], NULL) == -1)
-// 		{
-// 			free(data->philo);
-// 			pthread_mutex_destroy(&data->end_mutex);
-// 			pthread_mutex_destroy(data->fork_mutex);
-// 			return (-1);
-// 		}
-// 	}
-// 	data->end_sim = 0;
-// 	i = -1;
-// 	while (++i < data->number_of_philosophers)
-// 	{
-// 		data->philo[i].id = i;
-// 		data->philo[i].left_fork = i;
-// 		data->philo[i].right_fork = (i + 1) % data->number_of_philosophers;
-// 		data->philo[i].data = data;
-// 	}
-	
-// 	data->monitoring->data = data; 
-// 	return (0);
-// }
-
-
 void	ft_free(t_data *data)
 {
-	int	i;
-
 	free(data->philo);
 	free(data->monitoring);
-	i = 0;
-	while (i < data->number_of_philosophers)
-	{
-		pthread_mutex_destroy(&data->fork_mutex[i]);
-		i++;
-	}
-	pthread_mutex_destroy(&data->end_mutex);
+	ft_destroy_mutex(data);
 }
 
 int	main(int ac, char **av)
 {
 	int	i;
-	// if (ac != 5 && ac != 6)
-	// {
-		t_data data;
-		
-		if (ft_pars(&data, av, &ac) != 0)
+	t_data data;
+
+	if (ac >= 5 && ac <= 6)
+	{
+		if (ft_pars(av, ac) != 0)
 			return (0);
-		init_data(ac, av, &data);
-		printf("%p\n", &data);
+		if(init_data(ac, av, &data) == 1)
+			return (0);
 		ft_routine(&data);
-		i = 0;
-		while (i < data.number_of_philosophers)
-		{
-			pthread_join(data.philo[i].tid, NULL);
-			i++;
-		}
 		pthread_join(data.monitoring->tid, NULL);
-		i = 0;
+		i = -1;
+		while (++i < data.number_of_philosophers)
+			pthread_join(data.philo[i].tid, NULL);
 		ft_free(&data);
-	// }
+	}
 	return (0);
 }

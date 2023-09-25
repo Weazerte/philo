@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eaubry <eaubry@student.42.fr>              +#+  +:+       +#+        */
+/*   By: weaz <weaz@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:21 by eaubry            #+#    #+#             */
-/*   Updated: 2023/09/15 12:58:26 by eaubry           ###   ########.fr       */
+/*   Updated: 2023/09/24 05:41:11 by weaz             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,20 @@
 
 typedef struct s_data
 {
-	long int start_time;
 	pthread_mutex_t	*fork_mutex;
 	pthread_mutex_t end_mutex;
-	int	end_sim;
+	pthread_mutex_t m_lst_meal;
+	pthread_mutex_t iter_mutex;
+	pthread_mutex_t print;
+	long int start_time;
 	struct s_philo *philo;
 	struct s_moni *monitoring;
+	int	end_sim;
 	int	number_of_philosophers;
 	int	ttd;
 	int	tte;
 	int	tts;
+	int max_iter;
 	
 } t_data ;
 
@@ -50,6 +54,7 @@ typedef struct s_philo
 	t_data	*data;
 	int	left_fork;
 	int	right_fork;
+	int iteration;
 	
 } t_philo;
 
@@ -71,6 +76,20 @@ void	philo_is_sleeping(t_philo *philo);
 
 void	*monitoring_routine(void *data_ptr);
 
+void	*monitoring_routine_max_iter(void *data_ptr);
+
 int	init_data(int ac, char **av, t_data *data);
+
+int	simu_delay(long int start_time);
+
+void	ft_free_init(t_data *data, char *s);
+
+int	ft_destroy_mutex(t_data *data);
+
+int	ft_isdigit(char c);
+
+int	ft_end_sim_moni(t_moni *monitoring);
+
+int	check_max_iter(t_data *data);
 
 #endif
