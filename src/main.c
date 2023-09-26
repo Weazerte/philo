@@ -6,7 +6,7 @@
 /*   By: eaubry <eaubry@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:36:24 by eaubry            #+#    #+#             */
-/*   Updated: 2023/09/25 18:07:26 by eaubry           ###   ########.fr       */
+/*   Updated: 2023/09/26 15:52:20 by eaubry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,9 @@ int	ft_usleep(long int time)
 
 	n_time = time_now() + time;
 	while (time_now() < n_time)
+	{
 		usleep(100);
+	}
 	return (1);
 }
 

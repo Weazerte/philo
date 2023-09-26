@@ -6,7 +6,7 @@
 /*   By: eaubry <eaubry@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/22 15:42:22 by weaz              #+#    #+#             */
-/*   Updated: 2023/09/25 18:13:59 by eaubry           ###   ########.fr       */
+/*   Updated: 2023/09/26 16:30:30 by eaubry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	*monitoring_routine(void *data_ptr)
 
 	data = (t_data *)data_ptr;
 	simu_delay(data->start_time);
-	while (ft_end_sim_moni(data->monitoring) == 0)
+	while (ft_end_sim(data) == 0)
 	{
 		i = -1;
 		while (++i < data->number_of_philosophers)
@@ -33,6 +33,7 @@ void	*monitoring_routine(void *data_ptr)
 				data->end_sim = 1;
 				pthread_mutex_unlock(&data->end_mutex);
 				philo_is_dead(data, i);
+				return (NULL);
 			}
 			pthread_mutex_unlock(&data->m_lst_meal[data->philo[i].id]);
 		}
@@ -48,7 +49,7 @@ void	*monitoring_routine_max_iter(void *data_ptr)
 
 	data = (t_data *)data_ptr;
 	simu_delay(data->start_time);
-	while (ft_end_sim_moni(data->monitoring) == 0)
+	while (ft_end_sim(data) == 0)
 	{
 		i = -1;
 		while (++i < data->number_of_philosophers)

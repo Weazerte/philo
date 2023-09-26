@@ -6,7 +6,7 @@
 /*   By: eaubry <eaubry@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 23:45:01 by weaz              #+#    #+#             */
-/*   Updated: 2023/09/25 18:15:05 by eaubry           ###   ########.fr       */
+/*   Updated: 2023/09/26 15:22:33 by eaubry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void	philo_is_dead(t_data *data, int i)
 {
+	pthread_mutex_unlock(&data->m_lst_meal[i]);
 	pthread_mutex_lock(&data->print);
 	if (data->can_i == 1)
 	{
@@ -21,8 +22,15 @@ void	philo_is_dead(t_data *data, int i)
 		return ;
 	}
 	data->can_i = 1;
-	printf("%ld %d died\n", time_now(), i);
+	printf("%ld %d died\n", (time_now() - data->start_time), i + 1);
 	pthread_mutex_unlock(&data->print);
+}
+
+int	simu_delay(long int start_time)
+{
+	while (time_now() < start_time)
+		continue ;
+	return (0);
 }
 
 int	ft_destroy_mutex(t_data *data)

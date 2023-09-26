@@ -6,7 +6,7 @@
 /*   By: eaubry <eaubry@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 17:40:16 by eaubry            #+#    #+#             */
-/*   Updated: 2023/09/25 18:11:27 by eaubry           ###   ########.fr       */
+/*   Updated: 2023/09/26 16:45:03 by eaubry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,29 +15,36 @@
 void	print_philo(int who, t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->print);
-	if (philo->data->can_i == 1)
+	if (philo->data->can_i == 0)
 	{
-		pthread_mutex_unlock(&philo->data->print);
-		return ;
+		if (who == 0)
+			printf("%ld %d has taken a fork\n",
+				(time_now() - philo->data->start_time), philo->id + 1);
+		else if (who == 1)
+			printf("%ld %d is eating\n",
+				(time_now() - philo->data->start_time), philo->id + 1);
+		else if (who == 2)
+			printf("%ld %d is sleeping\n",
+				(time_now() - philo->data->start_time), philo->id + 1);
+		else if (who == 3)
+			printf("%ld %d is thinking\n",
+				(time_now() - philo->data->start_time), philo->id + 1);
+		else if (who == 4)
+			printf("%ld %d died\n",
+				(time_now() - philo->data->start_time), philo->id + 1);
 	}
-	if (who == 0)
-		printf("%ld %d has taken a fork\n", time_now(), philo->id);
-	else if (who == 1)
-		printf("%ld %d is eating\n", time_now(), philo->id);
-	else if (who == 2)
-		printf("%ld %d is sleeping\n", time_now(), philo->id);
-	else if (who == 3)
-		printf("%ld %d is thinking\n", time_now(), philo->id);
-	else if (who == 4)
-		printf("%ld %d died\n", time_now(), philo->id);
 	pthread_mutex_unlock(&philo->data->print);
 }
 
-void	philo_is_eating(t_philo *philo)
+int	philo_is_eating(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->fork_mutex[philo->left_fork]);
 	print_philo(0, philo);
+	// if (check_end_philo(philo, 1) == -1)
+	// 	return (-1);
 	pthread_mutex_lock(&philo->data->fork_mutex[philo->right_fork]);
+	// if (check_end_philo(philo, 2) == -1)
+	// 	return (-1);
 	print_philo(0, philo);
 	pthread_mutex_lock(&philo->data->m_lst_meal[philo->id]);
 	philo->lst_meal = time_now();
@@ -49,13 +56,19 @@ void	philo_is_eating(t_philo *philo)
 	pthread_mutex_unlock(&philo->data->iter_mutex);
 	pthread_mutex_unlock(&philo->data->fork_mutex[philo->left_fork]);
 	pthread_mutex_unlock(&philo->data->fork_mutex[philo->right_fork]);
+	return (0);
 }
 
-void	philo_is_sleeping(t_philo *philo)
+int	philo_is_sleeping(t_philo *philo)
 {
+	// if (check_end_philo(philo, 0) == 1)
+	// 	return (-1);
 	print_philo(2, philo);
 	ft_usleep(philo->data->tts);
+	// if (check_end_philo(philo, 0) == 1)
+	// 	return (-1);
 	print_philo(3, philo);
+	return (0);
 }
 
 void	*thread_routine(void *data_ptr)
@@ -64,15 +77,22 @@ void	*thread_routine(void *data_ptr)
 
 	philo = (t_philo *)data_ptr;
 	simu_delay(philo->data->start_time);
+	if (philo->data->number_of_philosophers == 1)
+	{
+		print_philo(0, philo);
+		return (NULL);
+	}
 	if (philo->id % 2 == 0)
 		ft_usleep(philo->data->tte * 0.9 + 1);
 	if ((philo->data->number_of_philosophers % 2 == 1)
 		&& (philo->id == (philo->data->number_of_philosophers - 1)))
 		ft_usleep(philo->data->tte);
-	while (ft_end_sim(philo) == 0)
+	while (ft_end_sim(philo->data) == 0)
 	{
-		philo_is_eating(philo);
-		philo_is_sleeping(philo);
+		if (philo_is_eating(philo) == -1)
+			break ;
+		if (philo_is_sleeping(philo) == -1)
+			break ;
 	}
 	return (NULL);
 }
@@ -83,6 +103,8 @@ void	ft_routine(t_data *data)
 
 	i = -1;
 	data->start_time = time_now() + (data->number_of_philosophers * 20);
+	// if (data->ttd <= (data->tte + data->tts))
+	// 	start_fcked_routine(data);
 	while (++i < data->number_of_philosophers)
 		pthread_create(&data->philo[i].tid, NULL,
 			&thread_routine, &data->philo[i]);
