@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eaubry <eaubry@student.42.fr>              +#+  +:+       +#+        */
+/*   By: weaz <weaz@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 13:27:21 by eaubry            #+#    #+#             */
-/*   Updated: 2023/09/26 16:33:34 by eaubry           ###   ########.fr       */
+/*   Updated: 2023/09/27 02:13:34 by weaz             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,9 +71,9 @@ int					ft_atoi(const char *nptr);
 
 void				print_philo(int who, t_philo *philo);
 
-int					philo_is_eating(t_philo *philo);
+void				philo_is_eating(t_philo *philo);
 
-int					philo_is_sleeping(t_philo *philo);
+void				philo_is_sleeping(t_philo *philo);
 
 void				*monitoring_routine(void *data_ptr);
 
@@ -94,5 +94,7 @@ int					check_max_iter(t_data *data);
 void				philo_is_dead(t_data *data, int i);
 
 int					check_end_philo(t_philo *philo, int who);
+
+void				start_fcked_routine(t_data *data);
 
 #endif

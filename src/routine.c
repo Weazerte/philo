@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eaubry <eaubry@student.42.fr>              +#+  +:+       +#+        */
+/*   By: weaz <weaz@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 17:40:16 by eaubry            #+#    #+#             */
-/*   Updated: 2023/09/26 16:45:03 by eaubry           ###   ########.fr       */
+/*   Updated: 2023/09/27 12:56:28 by weaz             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,11 @@ void	print_philo(int who, t_philo *philo)
 	pthread_mutex_unlock(&philo->data->print);
 }
 
-int	philo_is_eating(t_philo *philo)
+void	philo_is_eating(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->fork_mutex[philo->left_fork]);
 	print_philo(0, philo);
-	// if (check_end_philo(philo, 1) == -1)
-	// 	return (-1);
 	pthread_mutex_lock(&philo->data->fork_mutex[philo->right_fork]);
-	// if (check_end_philo(philo, 2) == -1)
-	// 	return (-1);
 	print_philo(0, philo);
 	pthread_mutex_lock(&philo->data->m_lst_meal[philo->id]);
 	philo->lst_meal = time_now();
@@ -56,19 +52,15 @@ int	philo_is_eating(t_philo *philo)
 	pthread_mutex_unlock(&philo->data->iter_mutex);
 	pthread_mutex_unlock(&philo->data->fork_mutex[philo->left_fork]);
 	pthread_mutex_unlock(&philo->data->fork_mutex[philo->right_fork]);
-	return (0);
 }
 
-int	philo_is_sleeping(t_philo *philo)
+void	philo_is_sleeping(t_philo *philo)
 {
-	// if (check_end_philo(philo, 0) == 1)
-	// 	return (-1);
 	print_philo(2, philo);
 	ft_usleep(philo->data->tts);
-	// if (check_end_philo(philo, 0) == 1)
-	// 	return (-1);
+	if (ft_end_sim(philo->data) == 0)
+		return ;
 	print_philo(3, philo);
-	return (0);
 }
 
 void	*thread_routine(void *data_ptr)
@@ -77,22 +69,20 @@ void	*thread_routine(void *data_ptr)
 
 	philo = (t_philo *)data_ptr;
 	simu_delay(philo->data->start_time);
-	if (philo->data->number_of_philosophers == 1)
-	{
-		print_philo(0, philo);
-		return (NULL);
-	}
 	if (philo->id % 2 == 0)
 		ft_usleep(philo->data->tte * 0.9 + 1);
 	if ((philo->data->number_of_philosophers % 2 == 1)
 		&& (philo->id == (philo->data->number_of_philosophers - 1)))
 		ft_usleep(philo->data->tte);
+	if (philo->data->number_of_philosophers == 1)
+	{
+		print_philo(0, philo);
+		return (NULL);
+	}
 	while (ft_end_sim(philo->data) == 0)
 	{
-		if (philo_is_eating(philo) == -1)
-			break ;
-		if (philo_is_sleeping(philo) == -1)
-			break ;
+		philo_is_eating(philo);
+		philo_is_sleeping(philo);
 	}
 	return (NULL);
 }
@@ -102,23 +92,26 @@ void	ft_routine(t_data *data)
 	int	i;
 
 	i = -1;
-	data->start_time = time_now() + (data->number_of_philosophers * 20);
-	// if (data->ttd <= (data->tte + data->tts))
-	// 	start_fcked_routine(data);
-	while (++i < data->number_of_philosophers)
-		pthread_create(&data->philo[i].tid, NULL,
-			&thread_routine, &data->philo[i]);
-	if (data->max_iter == -1)
-		pthread_create(&data->monitoring->tid, NULL,
-			&monitoring_routine, data);
+	if (data->ttd <= (data->tte + data->tts))
+		start_fcked_routine(data);
 	else
-		pthread_create(&data->monitoring->tid, NULL,
-			&monitoring_routine_max_iter, data);
-	i = -1;
-	while (++i < data->number_of_philosophers)
 	{
-		pthread_mutex_lock(&data->m_lst_meal[data->philo[i].id]);
-		data->philo[i].lst_meal = data->start_time;
-		pthread_mutex_unlock(&data->m_lst_meal[data->philo[i].id]);
+		data->start_time = time_now() + (data->number_of_philosophers * 20);
+		while (++i < data->number_of_philosophers)
+			pthread_create(&data->philo[i].tid, NULL,
+				&thread_routine, &data->philo[i]);
+		if (data->max_iter == -1)
+			pthread_create(&data->monitoring->tid, NULL,
+				&monitoring_routine, data);
+		else
+			pthread_create(&data->monitoring->tid, NULL,
+				&monitoring_routine_max_iter, data);
+		i = -1;
+		while (++i < data->number_of_philosophers)
+		{
+			pthread_mutex_lock(&data->m_lst_meal[data->philo[i].id]);
+			data->philo[i].lst_meal = data->start_time;
+			pthread_mutex_unlock(&data->m_lst_meal[data->philo[i].id]);
+		}
 	}
 }

@@ -3,56 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   check.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eaubry <eaubry@student.42.fr>              +#+  +:+       +#+        */
+/*   By: weaz <weaz@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/29 19:08:00 by eaubry            #+#    #+#             */
-/*   Updated: 2023/09/26 16:43:53 by eaubry           ###   ########.fr       */
+/*   Updated: 2023/09/26 23:10:08 by weaz             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
-
-// void	start_fcked_routine(t_data *data)
-// {
-// 		int	i;
-
-// 	i = -1;
-// 	while (++i < data->number_of_philosophers)
-// 		pthread_create(&data->philo[i].tid, NULL,
-// 			&fcked_routine, &data->philo[i]);
-// 	if (data->max_iter == -1)
-// 		pthread_create(&data->monitoring->tid, NULL,
-// 			&monitoring_routine, data);
-// 	else
-// 		pthread_create(&data->monitoring->tid, NULL,
-// 			&monitoring_routine_max_iter, data);
-// 	i = -1;
-// 	while (++i < data->number_of_philosophers)
-// 	{
-// 		pthread_mutex_lock(&data->m_lst_meal[data->philo[i].id]);
-// 		data->philo[i].lst_meal = data->start_time;
-// 		pthread_mutex_unlock(&data->m_lst_meal[data->philo[i].id]);
-// 	}
-// }
-
-// void	fcked_routine(void *data_ptr)
-// {
-// 	t_philo	*philo;
-
-// 	philo = (t_philo *)data_ptr;
-// 	simu_delay(philo->data->start_time);
-// 	if (philo->data->number_of_philosophers == 1)
-// 	{
-// 		print_philo(0, philo);
-// 		return (NULL);
-// 	}
-// 	if (philo->id % 2 == 0)
-// 		ft_usleep(philo->data->tte * 0.9 + 1);
-// 	if ((philo->data->number_of_philosophers % 2 == 1)
-// 		&& (philo->id == (philo->data->number_of_philosophers - 1)))
-// 		ft_usleep(philo->data->tte);
-	
-// }
 
 int	check_end_philo(t_philo *philo, int who)
 {
