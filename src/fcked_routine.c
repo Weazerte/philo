@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   fcked_routine.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: weaz <weaz@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: eaubry <eaubry@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 22:39:09 by weaz              #+#    #+#             */
-/*   Updated: 2023/09/27 12:50:39 by weaz             ###   ########.fr       */
+/*   Updated: 2023/09/29 13:40:38 by eaubry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-void    philo_eat_timed(t_philo *philo, int t2e)
+void	philo_eat_timed(t_philo *philo, int t2e)
 {
-    pthread_mutex_lock(&philo->data->fork_mutex[philo->left_fork]);
+	pthread_mutex_lock(&philo->data->fork_mutex[philo->left_fork]);
 	print_philo(0, philo);
 	pthread_mutex_lock(&philo->data->fork_mutex[philo->right_fork]);
 	print_philo(0, philo);
@@ -30,65 +30,62 @@ void    philo_eat_timed(t_philo *philo, int t2e)
 	pthread_mutex_unlock(&philo->data->fork_mutex[philo->right_fork]);
 }
 
-void    philo_sleep_timed(t_philo *philo, int t2s)
+void	philo_sleep_timed(t_philo *philo, int t2s)
 {
-    print_philo(2, philo);
+	print_philo(2, philo);
 	ft_usleep(t2s);
 	print_philo(3, philo);
 }
 
-void    routine_timed(t_philo *philo)
+void	routine_timed(t_philo *philo)
 {
-    int t2e;
-    int t2s;
+	int	t2e;
+	int	t2s;
 
-    t2e = philo->data->tte;
-    t2s = philo->data->tts;
-    if (philo->data->tte > philo->data->tts)
-	{
-    	t2e = (philo->data->ttd - philo->data->tts);
-	}
+	t2e = philo->data->tte;
+	t2s = philo->data->tts;
+	if (philo->data->tte > philo->data->tts)
+		t2e = (philo->data->ttd - philo->data->tts);
 	else
-	{
-    	t2s = (philo->data->ttd - philo->data->tte);
-	}
-	printf("t2e : %d    t2s : %d\n", t2e, t2s);
-    philo_eat_timed(philo, t2e);
-    philo_sleep_timed(philo, t2s);
+		t2s = (philo->data->ttd - philo->data->tte);
+	philo_eat_timed(philo, t2e);
+	philo_sleep_timed(philo, t2s);
 }
 
 void	*fcked_routine(void *data_ptr)
 {
 	t_philo	*philo;
+	int		wait;
 
 	philo = (t_philo *)data_ptr;
 	simu_delay(philo->data->start_time);
+	if (philo->data->tte > philo->data->tts)
+		wait = (philo->data->ttd - philo->data->tts);
+	else
+		wait = (philo->data->ttd - philo->data->tte);
 	if (philo->id % 2 == 0)
-		ft_usleep(philo->data->tte * 0.9 + 1);
+		ft_usleep(wait * 0.9 + 1);
 	if ((philo->data->number_of_philosophers % 2 == 1)
 		&& (philo->id == (philo->data->number_of_philosophers - 1)))
-		ft_usleep(philo->data->tte);
+		ft_usleep(wait);
 	if (philo->data->number_of_philosophers == 1)
-	{
-		print_philo(0, philo);
-		return (NULL);
-	}
+		return (print_philo(0, philo), NULL);
 	while (ft_end_sim(philo->data) == 0)
-        routine_timed(philo);
-    return (NULL);
+		routine_timed(philo);
+	return (NULL);
 }
+
 void	start_fcked_routine(t_data *data)
 {
 	int	i;
 
-    data->start_time = time_now() + (data->number_of_philosophers * 20);
+	data->start_time = time_now() + (data->number_of_philosophers * 20);
 	i = -1;
 	while (++i < data->number_of_philosophers)
-		pthread_create(&data->philo[i].tid, NULL,
-			&fcked_routine, &data->philo[i]);
+		pthread_create(&data->philo[i].tid, NULL, &fcked_routine,
+			&data->philo[i]);
 	if (data->max_iter == -1)
-		pthread_create(&data->monitoring->tid, NULL,
-			&monitoring_routine, data);
+		pthread_create(&data->monitoring->tid, NULL, &monitoring_routine, data);
 	else
 		pthread_create(&data->monitoring->tid, NULL,
 			&monitoring_routine_max_iter, data);
